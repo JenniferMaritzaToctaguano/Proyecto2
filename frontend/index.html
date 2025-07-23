@@ -19,18 +19,17 @@
       min-height: 100vh;
     }
 
-  .container {
-  background: linear-gradient(to right, #2ecc71, #27ae60); /* Verde selva */
-  padding: 2rem;
-  border-radius: 15px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  width: 95vw;
-  max-width: 1200px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-}
-
+    .container {
+      background: linear-gradient(to right, #2ecc71, #27ae60);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+      width: 95vw;
+      max-width: 1200px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+    }
 
     .formulario,
     .lista {
@@ -54,28 +53,27 @@
     input,
     select,
     button {
-      padding: 0.5rem 0.8rem; /* Más pequeño */
-      font-size: 0.9rem; /* Tamaño reducido */
+      padding: 0.5rem 0.8rem;
+      font-size: 0.9rem;
       border-radius: 8px;
       border: 2px solid #4caf50;
       transition: border-color 0.3s ease, box-shadow 0.3s ease;
       width: 100%;
-      box-sizing: border-box;
-      background-color: #e0f7fa; /* Color llamativo claro */
-      color: #004d40; /* Texto oscuro para buen contraste */
+      background-color: #e0f7fa;
+      color: #004d40;
     }
 
     input::placeholder,
     select {
-      color: #00796b; /* Placeholder y texto select */
+      color: #00796b;
     }
 
     input:focus,
     select:focus {
-      border-color: #00796b; /* Verde más oscuro al enfocar */
-      box-shadow: 0 0 8px #4db6ac; /* Luz suave */
+      border-color: #00796b;
+      box-shadow: 0 0 8px #4db6ac;
       outline: none;
-      background-color: #b2dfdb; /* Fondo más intenso al foco */
+      background-color: #b2dfdb;
       color: #004d40;
     }
 
@@ -87,8 +85,7 @@
       cursor: pointer;
       box-shadow: 0 4px 8px rgba(255, 111, 0, 0.6);
       text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
-      font-size: 1rem; /* Botones un poco más grandes */
+      font-size: 1rem;
       padding: 0.75rem 1.2rem;
       border-radius: 10px;
     }
@@ -98,7 +95,6 @@
       box-shadow: 0 6px 12px rgba(255, 143, 0, 0.8);
     }
 
-    /* Un poco de espacio extra entre campos */
     form > * {
       margin-bottom: 0.8rem;
     }
@@ -156,22 +152,45 @@
       overflow-y: auto;
       padding-right: 0.5rem;
     }
+
+    #notificacion {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 1rem 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      font-weight: bold;
+      display: none;
+      z-index: 1000;
+      color: white;
+      font-size: 1rem;
+      min-width: 220px;
+      text-align: center;
+    }
+
+    #notificacion.success {
+      background-color: #2ecc71;
+    }
+
+    #notificacion.error {
+      background-color: #e74c3c;
+    }
+
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- FORMULARIO DUEÑO -->
-      <div>
-        <h2>👤 Agregar Dueño</h2>
-        <form id="form-duenio">
-          <input id="nombre-duenio" placeholder="Nombre completo" required />
-          <button type="submit">➕ Agregar Dueño</button>
-        </form>
-        <h3>📋 Dueños Registrados</h3>
-        <select id="duenio-lista" size="5" style="width: 100%; margin-top: 0.8rem;"></select>
-      </div>
+    <div>
+      <h2>👤 Agregar Dueño</h2>
+      <form id="form-duenio">
+        <input id="nombre-duenio" placeholder="Nombre completo" required />
+        <button type="submit">➕ Agregar Dueño</button>
+      </form>
+      <h3>📋 Dueños Registrados</h3>
+      <select id="duenio-lista" size="5" style="width: 100%; margin-top: 0.8rem;"></select>
+    </div>
 
-    <!-- FORMULARIO ANIMAL -->
     <div class="formulario">
       <h2>🐶 Agregar Animal</h2>
       <form id="form-animal">
@@ -183,8 +202,6 @@
         <input id="edad" type="number" placeholder="Edad" required />
         <input id="alimentacion" placeholder="Alimentación" required />
         <input id="lugar" placeholder="Lugar donde vive" required />
-
-        <!-- Nuevos campos añadidos -->
         <select id="sexo" required>
           <option value="">Sexo</option>
           <option value="Macho">Macho</option>
@@ -198,20 +215,17 @@
           <option value="En adopción">En adopción</option>
         </select>
         <input id="color" placeholder="Color" required />
-        <!-- Fin nuevos campos -->
-
-        <button type="submit">💾 Guardar Animal</button>
+        <button type="submit" id="btn-animal">💾 Guardar Animal</button>
       </form>
     </div>
 
-    <!-- LISTA DE ANIMALES -->
     <div class="lista">
       <h1>🐾 Lista de Animales</h1>
       <ul id="animales"></ul>
     </div>
   </div>
 
-
+  <div id="notificacion"></div>
 
   <script>
     const API_URL = 'http://localhost:3000/api/animales';
@@ -238,14 +252,28 @@
     let duenios = [];
     let editando = null;
 
+    function mostrarNotificacion(mensaje, tipo = 'success') {
+      const contenedor = document.getElementById('notificacion');
+      contenedor.textContent = mensaje;
+      contenedor.className = '';
+      contenedor.classList.add(tipo);
+      contenedor.style.display = 'block';
+      setTimeout(() => {
+        contenedor.style.display = 'none';
+      }, 3000);
+    }
+
     formDuenio.addEventListener('submit', e => {
       e.preventDefault();
       const nombre = nombreDuenioInput.value.trim();
-      if (!nombre) return alert('Nombre requerido');
+      if (!nombre) {
+        mostrarNotificacion('Nombre requerido', 'error');
+        return;
+      }
       duenios.push({ nombre });
       renderDuenios();
       formDuenio.reset();
-      alert('Dueño agregado');
+      mostrarNotificacion('Dueño agregado');
     });
 
     function renderDuenios() {
@@ -266,6 +294,7 @@
 
     formAnimal.addEventListener('submit', async e => {
       e.preventDefault();
+
       const animal = {
         duenio: animalDuenioSelect.value,
         nombre: nombreInput.value.trim(),
@@ -276,45 +305,39 @@
         sexo: sexoInput.value,
         peso: parseFloat(pesoInput.value),
         estado: estadoInput.value,
-        color: colorInput.value.trim(),
+        color: colorInput.value.trim()
       };
-
-      if (!animal.duenio || !animal.nombre || !animal.especie || isNaN(animal.edad))
-        return alert('Complete los campos obligatorios');
 
       try {
         let res;
         if (editando !== null) {
-          res = await fetch(`${API_URL}/${animalesData[editando].id}`, {
+          const id = animalesData[editando].id;
+          res = await fetch(`${API_URL}/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(animal)
           });
+          if (!res.ok) throw new Error('Error al actualizar');
+          editando = null;
+          btnAnimal.textContent = '💾 Guardar Animal';
+          await cargarAnimales();
         } else {
           res = await fetch(API_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(animal)
           });
-        }
-
-        if (!res.ok) throw new Error('Error de servidor');
-        const data = await res.json();
-
-        if (editando !== null) {
-          animalesData[editando] = data;
-          editando = null;
-          btnAnimal.textContent = '💾 Guardar Animal';
-        } else {
+          if (!res.ok) throw new Error('Error de servidor');
+          const data = await res.json();
           animalesData.push(data);
+          renderAnimales();
         }
 
-        renderAnimales();
         formAnimal.reset();
         animalDuenioSelect.value = '';
-        alert('Animal guardado correctamente');
+        mostrarNotificacion('Animal guardado correctamente');
       } catch (err) {
-        alert(err.message);
+        mostrarNotificacion(err.message, 'error');
       }
     });
 
@@ -323,17 +346,16 @@
       animalesData.forEach((a, i) => {
         const li = document.createElement('li');
         li.innerHTML = `
-        👤 Dueño: <strong>${a.duenio}</strong><br/>
-        🐾 Nombre del Animal: <strong>${a.nombre}</strong><br/>
-        🐕 Especie: (${a.especie})<br/>
-        🎂 Edad: ${a.edad} años<br/>
-        🍽️ Alimentación: ${a.alimentacion}<br/>
-        📍 Lugar: ${a.lugar}<br/>
-         ⚧ Sexo: ${a.sexo}<br/>
-        ⚖️ Peso: ${a.peso} kg<br/>
-        📌 Estado: ${a.estado}<br/>
-        🎨 Color: ${a.color}<br/>
-
+          👤 Dueño: <strong>${a.duenio}</strong><br/>
+          🐾 Nombre del Animal: <strong>${a.nombre}</strong><br/>
+          🐕 Especie: (${a.especie})<br/>
+          🎂 Edad: ${a.edad} años<br/>
+          🍽️ Alimentación: ${a.alimentacion}<br/>
+          📍 Lugar: ${a.lugar}<br/>
+          ⚧ Sexo: ${a.sexo}<br/>
+          ⚖️ Peso: ${a.peso} kg<br/>
+          📌 Estado: ${a.estado}<br/>
+          🎨 Color: ${a.color}<br/>
           <div class="btn-group">
             <button onclick="editarAnimal(${i})">✏️ Editar</button>
             <button onclick="eliminarAnimal(${i})">🗑️ Eliminar</button>
@@ -351,8 +373,9 @@
         if (!res.ok) throw new Error('Error al eliminar');
         animalesData.splice(i, 1);
         renderAnimales();
+        mostrarNotificacion('Animal eliminado correctamente');
       } catch (err) {
-        alert(err.message);
+        mostrarNotificacion(err.message, 'error');
       }
     }
 
@@ -369,9 +392,8 @@
       estadoInput.value = a.estado;
       colorInput.value = a.color;
       btnAnimal.textContent = '💾 Actualizado Animal';
-      editando = i; // <--- Esto es clave para saber que se está editando
+      editando = i;
     }
-    
 
     async function cargarAnimales() {
       try {
@@ -381,6 +403,7 @@
         renderAnimales();
       } catch (err) {
         console.error(err);
+        mostrarNotificacion('Error al cargar animales', 'error');
       }
     }
 
