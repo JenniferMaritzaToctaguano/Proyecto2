@@ -4,10 +4,7 @@
   <meta charset="UTF-8" />
   <title>Zoológico Web</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(135deg, #43cea2, #185a9d);
@@ -18,7 +15,6 @@
       align-items: center;
       min-height: 100vh;
     }
-
     .container {
       background: linear-gradient(to right, #2ecc71, #27ae60);
       padding: 2rem;
@@ -30,29 +26,22 @@
       flex-wrap: wrap;
       gap: 2rem;
     }
-
-    .formulario,
-    .lista {
+    .formulario, .lista {
       flex: 1 1 320px;
       min-width: 300px;
       max-width: 500px;
     }
-
     h1, h2, h3 {
       text-align: center;
       color: #333;
     }
-
     form {
       display: flex;
       flex-direction: column;
       gap: 0.6rem;
       margin-top: 1rem;
     }
-
-    input,
-    select,
-    button {
+    input, select, button {
       padding: 0.5rem 0.8rem;
       font-size: 0.9rem;
       border-radius: 8px;
@@ -62,21 +51,16 @@
       background-color: #e0f7fa;
       color: #004d40;
     }
-
-    input::placeholder,
-    select {
+    input::placeholder, select {
       color: #00796b;
     }
-
-    input:focus,
-    select:focus {
+    input:focus, select:focus {
       border-color: #00796b;
       box-shadow: 0 0 8px #4db6ac;
       outline: none;
       background-color: #b2dfdb;
       color: #004d40;
     }
-
     button {
       background: linear-gradient(45deg, #ff6f00, #ff8f00);
       color: white;
@@ -89,26 +73,13 @@
       padding: 0.75rem 1.2rem;
       border-radius: 10px;
     }
-
     button:hover {
       background: linear-gradient(45deg, #ff8f00, #ff6f00);
       box-shadow: 0 6px 12px rgba(255, 143, 0, 0.8);
     }
-
-    form > * {
-      margin-bottom: 0.8rem;
-    }
-
-    #duenio-lista {
-      margin-top: 0.5rem;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
+    form > * { margin-bottom: 0.8rem; }
+    #duenio-lista { margin-top: 0.5rem; }
+    ul { list-style: none; padding: 0; margin: 0; }
     li {
       background: aqua;
       border: 1px solid #b2f2bb;
@@ -119,14 +90,12 @@
       position: relative;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
-
     .btn-group {
       display: flex;
       justify-content: flex-end;
       gap: 0.5rem;
       margin-top: 0.5rem;
     }
-
     .btn-group button {
       padding: 0.4rem 0.8rem;
       font-size: 0.9rem;
@@ -137,22 +106,16 @@
       cursor: pointer;
       transition: background 0.3s ease;
     }
-
     .btn-group button:last-child {
       background: #dc3545;
       color: white;
     }
-
-    .btn-group button:hover {
-      opacity: 0.9;
-    }
-
+    .btn-group button:hover { opacity: 0.9; }
     .lista {
       max-height: 500px;
       overflow-y: auto;
       padding-right: 0.5rem;
     }
-
     #notificacion {
       position: fixed;
       bottom: 30px;
@@ -168,15 +131,8 @@
       min-width: 220px;
       text-align: center;
     }
-
-    #notificacion.success {
-      background-color: #2ecc71;
-    }
-
-    #notificacion.error {
-      background-color: #e74c3c;
-    }
-
+    #notificacion.success { background-color: #2ecc71; }
+    #notificacion.error { background-color: #e74c3c; }
   </style>
 </head>
 <body>
@@ -258,18 +214,13 @@
       contenedor.className = '';
       contenedor.classList.add(tipo);
       contenedor.style.display = 'block';
-      setTimeout(() => {
-        contenedor.style.display = 'none';
-      }, 3000);
+      setTimeout(() => { contenedor.style.display = 'none'; }, 3000);
     }
 
     formDuenio.addEventListener('submit', e => {
       e.preventDefault();
       const nombre = nombreDuenioInput.value.trim();
-      if (!nombre) {
-        mostrarNotificacion('Nombre requerido', 'error');
-        return;
-      }
+      if (!nombre) return mostrarNotificacion('Nombre requerido', 'error');
       duenios.push({ nombre });
       renderDuenios();
       formDuenio.reset();
@@ -311,7 +262,8 @@
       try {
         let res;
         if (editando !== null) {
-          const id = animalesData[editando].id;
+          const id = animalesData[editando]?.id;
+          if (!id) return mostrarNotificacion('ID no encontrado para editar', 'error');
           res = await fetch(`${API_URL}/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -329,6 +281,7 @@
           });
           if (!res.ok) throw new Error('Error de servidor');
           const data = await res.json();
+          if (!data.id) return mostrarNotificacion('El servidor no devolvió ID', 'error');
           animalesData.push(data);
           renderAnimales();
         }
@@ -391,7 +344,7 @@
       pesoInput.value = a.peso;
       estadoInput.value = a.estado;
       colorInput.value = a.color;
-      btnAnimal.textContent = '💾 Actualizado Animal';
+      btnAnimal.textContent = '💾 Actualizar Animal';
       editando = i;
     }
 
