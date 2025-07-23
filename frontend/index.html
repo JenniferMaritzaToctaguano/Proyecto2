@@ -271,7 +271,7 @@
           });
           if (!res.ok) throw new Error('Error al actualizar');
           editando = null;
-          btnAnimal.textContent = '💾 Guardar Animal';
+          btnAnimal.textContent = '💾 GUARDAR ANIMAL';
           await cargarAnimales();
         } else {
           res = await fetch(API_URL, {
@@ -310,8 +310,8 @@
           📌 Estado: ${a.estado}<br/>
           🎨 Color: ${a.color}<br/>
           <div class="btn-group">
-            <button onclick="editarAnimal(${i})">✏️ Editar</button>
-            <button onclick="eliminarAnimal(${i})">🗑️ Eliminar</button>
+            <button onclick="editarAnimal(${i})">✏️ EDITARr</button>
+            <button onclick="eliminarAnimal(${i})">🗑️ ElIMINAR</button>
           </div>
         `;
         animalesLista.appendChild(li);
